@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #FBF3EA;
+  color: #3A2E28;
+}
+
+a {
+  color: #E9714C;
+}
+a:hover {
+  color: #C85A38;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #B3A79A;
+}
+input:focus, textarea:focus {
+  outline: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.scroll-area {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes spin-once {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spinning {
+  animation: spin-once 0.7s ease-in-out;
+}
