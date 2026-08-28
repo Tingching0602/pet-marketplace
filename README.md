@@ -1,4 +1,4 @@
-# 毛孩市集 (Fur-Kid Market)
+# 毛孩市集 (Pet Market)
 
 寵物二手拍賣平台。ASP.NET Core (C#) + EF Core + SQL Server 後端,React + TypeScript + Vite 前端。
 
