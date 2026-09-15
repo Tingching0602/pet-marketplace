@@ -27,7 +27,7 @@ jobs:
         run: dotnet build backend/PetMarketplace.Api/PetMarketplace.Api.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish backend/PetMarketplace.Api/PetMarketplace.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp""
+        run: dotnet publish backend/PetMarketplace.Api/PetMarketplace.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
