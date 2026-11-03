@@ -61,7 +61,7 @@ export function FeedPage() {
   };
 
   return (
-    <AppShell>
+    <AppShell wide>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <div
           style={{
@@ -167,13 +167,17 @@ export function FeedPage() {
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: "50px 20px" }}>
             <HeartIcon size={56} color="#E4D6C8" />
             <div style={{ fontSize: 13, fontWeight: 600, color: colors.textMuted, textAlign: "center", lineHeight: 1.6 }}>
-              {isSearching ? `找不到與「${searchQuery.trim()}」相關的商品` : "此分類目前沒有商品"}
+              {isSearching
+                ? `找不到與「${searchQuery.trim()}」相關的商品`
+                : activeCategory === "全部"
+                  ? "目前還沒有商品上架,晚點再來逛逛吧!"
+                  : "此分類目前沒有商品"}
             </div>
           </div>
         )}
 
         {products.length > 0 && (
-          <div style={{ columnCount: 2, columnGap: 12 }}>
+          <div className="product-grid">
             {products.map((p, i) => (
               <ProductCard key={p.id} product={p} imgHeight={CARD_HEIGHTS[i % CARD_HEIGHTS.length]} />
             ))}

@@ -58,3 +58,44 @@ button {
 .spinning {
   animation: spin-once 0.7s ease-in-out;
 }
+
+/* Layout: phone-width column by default, widening on tablets/desktops. */
+.app-shell {
+  max-width: 480px;
+}
+.page-content {
+  width: 100%;
+  margin: 0 auto;
+}
+.product-grid {
+  column-count: 2;
+  column-gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    max-width: 1080px;
+  }
+  .page-content {
+    max-width: 640px;
+  }
+  .page-content--wide {
+    max-width: none;
+  }
+  .product-grid {
+    column-count: 3;
+    column-gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid {
+    column-count: 4;
+  }
+}
+
+@media (max-width: 360px) {
+  .topbar-username {
+    display: none;
+  }
+}

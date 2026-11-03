@@ -30,7 +30,9 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
 
   const res = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
 
-  if (res.status === 401) {
+  // A 401 on an authenticated request means the session expired; a 401 without a
+  // token (e.g. wrong password on login) falls through to the server's message below.
+  if (res.status === 401 && authToken) {
     onUnauthorized?.();
     throw new ApiError(401, "未登入或登入已過期");
   }

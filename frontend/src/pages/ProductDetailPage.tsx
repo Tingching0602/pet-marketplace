@@ -9,6 +9,7 @@ import { fetchProduct, updateProductStatus } from "../api/products";
 import { sendMessage, startConversation } from "../api/conversations";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
+import { useLoginRedirect } from "../hooks/useLoginRedirect";
 import type { ProductDetail } from "../types";
 
 const conditionLabel: Record<string, string> = { New: "全新", Used: "二手" };
@@ -23,6 +24,7 @@ export function ProductDetailPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isFavorited, toggle } = useFavorites();
+  const goToLogin = useLoginRedirect();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [messaging, setMessaging] = useState(false);
@@ -44,7 +46,7 @@ export function ProductDetailPage() {
 
   const requireAuth = () => {
     if (!user) {
-      navigate("/login");
+      goToLogin();
       return false;
     }
     return true;

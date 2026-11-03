@@ -19,7 +19,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
+      <Route path="/" element={<FeedPage />} />
       <Route path="/products/:id" element={<ProductDetailPage />} />
       <Route path="/products/:id/edit" element={<ProtectedRoute><SellPage /></ProtectedRoute>} />
       <Route path="/my-products" element={<ProtectedRoute><MyProductsPage /></ProtectedRoute>} />

@@ -30,6 +30,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }, [user?.id]);
 
   const toggle = async (productId: number) => {
+    if (!user) return;
     setFavoritedIds((prev) => {
       const next = new Set(prev);
       if (next.has(productId)) next.delete(productId);

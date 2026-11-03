@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { colors, fonts } from "../theme/tokens";
 import { useAuth } from "../context/AuthContext";
 import { ApiError } from "../api/client";
+import { getRedirectTarget } from "../hooks/useLoginRedirect";
 
 const inputStyle: React.CSSProperties = {
   background: colors.cardWhite,
@@ -17,8 +18,10 @@ const inputStyle: React.CSSProperties = {
 };
 
 export function RegisterPage() {
-  const { register } = useAuth();
+  const { register, user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTarget = getRedirectTarget(location.state);
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,13 +34,15 @@ export function RegisterPage() {
     setSubmitting(true);
     try {
       await register(email, password, displayName);
-      navigate("/");
+      navigate(redirectTarget, { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "註冊失敗,請稍後再試。");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (!isLoading && user) return <Navigate to={redirectTarget} replace />;
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: colors.background, padding: 24 }}>
@@ -72,10 +77,14 @@ export function RegisterPage() {
 
         <div style={{ textAlign: "center", fontSize: 12.5, fontWeight: 600, color: colors.textSecondary }}>
           已經有帳號了?{" "}
-          <Link to="/login" style={{ fontWeight: 700 }}>
+          <Link to="/login" state={location.state} style={{ fontWeight: 700 }}>
             登入
           </Link>
         </div>
+
+        <Link to="/" style={{ textAlign: "center", fontSize: 12.5, fontWeight: 700, color: colors.textSecondary }}>
+          ← 先逛逛商品
+        </Link>
       </form>
     </div>
   );

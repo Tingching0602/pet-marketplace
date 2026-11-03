@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
 import { colors, fonts } from "../theme/tokens";
@@ -80,7 +80,12 @@ export function ProfilePage() {
         </div>
 
         <div
-          onClick={logout}
+          onClick={() =>
+            startTransition(() => {
+              navigate("/");
+              logout();
+            })
+          }
           style={{
             textAlign: "center",
             fontWeight: 700,

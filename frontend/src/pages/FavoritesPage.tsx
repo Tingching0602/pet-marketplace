@@ -26,7 +26,7 @@ export function FavoritesPage() {
   useEffect(load, [favoritedIds.size]);
 
   return (
-    <AppShell>
+    <AppShell wide>
       <PageHeader title="我的收藏" backTo="/" />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
@@ -46,7 +46,7 @@ export function FavoritesPage() {
       )}
 
       {products.length > 0 && (
-        <div style={{ columnCount: 2, columnGap: 12 }}>
+        <div className="product-grid">
           {products.map((p, i) => (
             <ProductCard key={p.id} product={p} imgHeight={CARD_HEIGHTS[i % CARD_HEIGHTS.length]} />
           ))}

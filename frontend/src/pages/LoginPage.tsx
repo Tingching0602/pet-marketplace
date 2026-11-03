@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { colors, fonts } from "../theme/tokens";
 import { useAuth } from "../context/AuthContext";
 import { ApiError } from "../api/client";
+import { getRedirectTarget } from "../hooks/useLoginRedirect";
 
 const inputStyle: React.CSSProperties = {
   background: colors.cardWhite,
@@ -17,9 +18,11 @@ const inputStyle: React.CSSProperties = {
 };
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, user, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("demo@petmarket.test");
+  const location = useLocation();
+  const redirectTarget = getRedirectTarget(location.state);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -30,13 +33,15 @@ export function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate("/");
+      navigate(redirectTarget, { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "登入失敗,請稍後再試。");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (!isLoading && user) return <Navigate to={redirectTarget} replace />;
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: colors.background, padding: 24 }}>
@@ -70,7 +75,7 @@ export function LoginPage() {
 
         <div style={{ textAlign: "center", fontSize: 12.5, fontWeight: 600, color: colors.textSecondary }}>
           還沒有帳號?{" "}
-          <Link to="/register" style={{ fontWeight: 700 }}>
+          <Link to="/register" state={location.state} style={{ fontWeight: 700 }}>
             立即註冊
           </Link>
         </div>
@@ -78,6 +83,10 @@ export function LoginPage() {
         <div style={{ textAlign: "center", fontSize: 11, fontWeight: 600, color: colors.textMuted, marginTop: 8 }}>
           示範帳號:demo@petmarket.test / Passw0rd!1
         </div>
+
+        <Link to="/" style={{ textAlign: "center", fontSize: 12.5, fontWeight: 700, color: colors.textSecondary }}>
+          ← 先逛逛商品
+        </Link>
       </form>
     </div>
   );

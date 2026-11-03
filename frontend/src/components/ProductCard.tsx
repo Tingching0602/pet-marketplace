@@ -4,6 +4,7 @@ import { HeartIcon, StarIcon } from "./icons/NavIcons";
 import { ProductIllustration } from "./icons/ProductIcons";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
+import { useLoginRedirect } from "../hooks/useLoginRedirect";
 import type { ProductListItem } from "../types";
 
 const conditionLabel: Record<string, string> = { New: "全新", Used: "二手" };
@@ -15,6 +16,7 @@ export function ProductCard({ product, imgHeight = 160 }: { product: ProductList
   const { user } = useAuth();
   const liked = isFavorited(product.id);
   const isOwner = user?.id === product.sellerId;
+  const goToLogin = useLoginRedirect();
 
   return (
     <div
@@ -77,7 +79,8 @@ export function ProductCard({ product, imgHeight = 160 }: { product: ProductList
           <div
             onClick={(e) => {
               e.stopPropagation();
-              toggle(product.id);
+              if (user) toggle(product.id);
+              else goToLogin();
             }}
             style={{
               position: "absolute",
