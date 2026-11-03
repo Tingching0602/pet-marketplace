@@ -61,9 +61,17 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
 
-    using var scope = app.Services.CreateScope();
-    await DbSeeder.SeedAsync(scope.ServiceProvider);
+// Apply pending migrations in every environment; demo data is opt-in outside Development.
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
+
+    if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("SeedDemoData"))
+    {
+        await DbSeeder.SeedAsync(scope.ServiceProvider);
+    }
 }
 
 app.UseCors("Frontend");

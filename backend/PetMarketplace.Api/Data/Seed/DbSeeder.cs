@@ -9,7 +9,6 @@ public static class DbSeeder
     public static async Task SeedAsync(IServiceProvider services)
     {
         var db = services.GetRequiredService<AppDbContext>();
-        await db.Database.MigrateAsync();
 
         await SeedCategoriesAsync(db);
         var (demoUser, shopUser) = await SeedDemoUsersAsync(services);
