@@ -53,5 +53,7 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
 export const apiGet = <T,>(path: string) => apiFetch<T>(path, { method: "GET" });
 export const apiPost = <T,>(path: string, body?: unknown) =>
   apiFetch<T>(path, { method: "POST", body: body ? JSON.stringify(body) : undefined });
+export const apiPut = <T,>(path: string, body?: unknown) =>
+  apiFetch<T>(path, { method: "PUT", body: body ? JSON.stringify(body) : undefined });
 export const apiPatch = <T,>(path: string, body?: unknown) =>
   apiFetch<T>(path, { method: "PATCH", body: body ? JSON.stringify(body) : undefined });

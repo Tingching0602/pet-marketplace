@@ -5,7 +5,7 @@ import { AvatarMascotIcon } from "../components/icons/MascotIcon";
 import { colors } from "../theme/tokens";
 import { useConversationsUnread } from "../context/ConversationsContext";
 
-function formatRelativeTime(iso: string): string {
+export function formatRelativeTime(iso: string): string {
   const date = new Date(iso);
   const diffMs = Date.now() - date.getTime();
   const diffMin = Math.floor(diffMs / 60000);

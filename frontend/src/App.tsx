@@ -12,6 +12,7 @@ import { SellPage } from "./pages/SellPage";
 import { MessagesPage } from "./pages/MessagesPage";
 import { ConversationThreadPage } from "./pages/ConversationThreadPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { MyProductsPage } from "./pages/MyProductsPage";
 
 function AppRoutes() {
   return (
@@ -20,6 +21,8 @@ function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
       <Route path="/products/:id" element={<ProductDetailPage />} />
+      <Route path="/products/:id/edit" element={<ProtectedRoute><SellPage /></ProtectedRoute>} />
+      <Route path="/my-products" element={<ProtectedRoute><MyProductsPage /></ProtectedRoute>} />
       <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
       <Route path="/sell" element={<ProtectedRoute><SellPage /></ProtectedRoute>} />
       <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />

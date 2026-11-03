@@ -30,7 +30,8 @@ public class ProfileController : ControllerBase
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null) return Unauthorized();
 
-        var activeListings = await _db.Products.CountAsync(p => p.SellerId == userId && p.Status == ProductStatus.Active);
+        var activeListings = await _db.Products.CountAsync(p => p.SellerId == userId &&
+            (p.Status == ProductStatus.Active || p.Status == ProductStatus.Reserved));
         var sold = await _db.Products.CountAsync(p => p.SellerId == userId && p.Status == ProductStatus.Sold);
         var favorites = await _db.Favorites.CountAsync(f => f.UserId == userId);
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
 import { colors, fonts } from "../theme/tokens";
 import { fetchProfile } from "../api/profile";
@@ -6,10 +7,17 @@ import { useAuth } from "../context/AuthContext";
 import { ProfileIcon, ChevronRightIcon } from "../components/icons/NavIcons";
 import type { Profile } from "../types";
 
-const MENU = ["帳戶設定", "收付款方式", "出貨地址", "客服中心"];
+const MENU: { label: string; to?: string }[] = [
+  { label: "我的商品", to: "/my-products" },
+  { label: "帳戶設定" },
+  { label: "收付款方式" },
+  { label: "出貨地址" },
+  { label: "客服中心" },
+];
 
 export function ProfilePage() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
@@ -41,23 +49,27 @@ export function ProfilePage() {
         </div>
 
         <div style={{ display: "flex", gap: 10 }}>
-          <div style={{ flex: 1, background: "#DCEEE5", borderRadius: 16, padding: 14, textAlign: "center" }}>
+          <div onClick={() => navigate("/my-products?tab=listed")} style={{ flex: 1, background: "#DCEEE5", borderRadius: 16, padding: 14, textAlign: "center", cursor: "pointer" }}>
             <div style={{ fontFamily: fonts.heading, fontWeight: 700, fontSize: 19 }}>{profile?.stats.activeListings ?? 0}</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#5C4C42", marginTop: 3 }}>上架中</div>
           </div>
-          <div style={{ flex: 1, background: "#F8DDE7", borderRadius: 16, padding: 14, textAlign: "center" }}>
+          <div onClick={() => navigate("/favorites")} style={{ flex: 1, background: "#F8DDE7", borderRadius: 16, padding: 14, textAlign: "center", cursor: "pointer" }}>
             <div style={{ fontFamily: fonts.heading, fontWeight: 700, fontSize: 19 }}>{profile?.stats.favorites ?? 0}</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#5C4C42", marginTop: 3 }}>已收藏</div>
           </div>
-          <div style={{ flex: 1, background: "#F7E3D0", borderRadius: 16, padding: 14, textAlign: "center" }}>
+          <div onClick={() => navigate("/my-products?tab=sold")} style={{ flex: 1, background: "#F7E3D0", borderRadius: 16, padding: 14, textAlign: "center", cursor: "pointer" }}>
             <div style={{ fontFamily: fonts.heading, fontWeight: 700, fontSize: 19 }}>{profile?.stats.sold ?? 0}</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#5C4C42", marginTop: 3 }}>已成交</div>
           </div>
         </div>
 
         <div style={{ background: colors.cardWhite, borderRadius: 18, overflow: "hidden", boxShadow: "0 3px 10px rgba(58,46,40,0.06)" }}>
-          {MENU.map((label) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: `1px solid ${colors.divider}` }}>
+          {MENU.map(({ label, to }) => (
+            <div
+              key={label}
+              onClick={to ? () => navigate(to) : undefined}
+              style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: `1px solid ${colors.divider}`, cursor: to ? "pointer" : undefined }}
+            >
               <div style={{ width: 32, height: 32, borderRadius: 10, background: colors.background, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <div style={{ width: 8, height: 8, borderRadius: 999, background: colors.textSecondary }} />
               </div>

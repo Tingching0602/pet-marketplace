@@ -29,10 +29,9 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(p => p.Condition).HasConversion<string>().HasMaxLength(20);
             entity.Property(p => p.Status).HasConversion<string>().HasMaxLength(20);
 
-            entity.HasOne(p => p.Category)
+            entity.HasMany(p => p.Categories)
                 .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .UsingEntity(j => j.ToTable("ProductCategories"));
 
             entity.HasOne(p => p.Seller)
                 .WithMany(u => u.Products)

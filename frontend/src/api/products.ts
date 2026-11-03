@@ -1,5 +1,12 @@
-import { apiGet, apiPatch, apiPost } from "./client";
-import type { Category, ProductDetail, ProductListResponse } from "../types";
+import { apiGet, apiPatch, apiPost, apiPut } from "./client";
+import type {
+  Category,
+  ConversationListItem,
+  MyProductItem,
+  ProductDetail,
+  ProductListResponse,
+  ProductStatus,
+} from "../types";
 
 export const fetchCategories = () => apiGet<Category[]>("/categories");
 
@@ -26,7 +33,7 @@ export const fetchProduct = (id: number) => apiGet<ProductDetail>(`/products/${i
 export interface CreateProductPayload {
   title: string;
   description?: string;
-  categoryId: number;
+  categoryIds: number[];
   condition: "New" | "Used";
   price: number;
   iconKind?: string;
@@ -36,5 +43,18 @@ export interface CreateProductPayload {
 export const createProduct = (payload: CreateProductPayload) =>
   apiPost<ProductDetail>("/products", payload);
 
-export const updateProductStatus = (id: number, status: "Active" | "Reserved" | "Sold") =>
+export type UpdateProductPayload = Omit<CreateProductPayload, "iconKind" | "imageUrl">;
+
+export const updateProduct = (id: number, payload: UpdateProductPayload) =>
+  apiPut<ProductDetail>(`/products/${id}`, payload);
+
+export const updateProductStatus = (id: number, status: ProductStatus) =>
   apiPatch<{ id: number; status: string }>(`/products/${id}/status`, { status });
+
+export type MyProductsFilter = "listed" | "delisted" | "sold";
+
+export const fetchMyProducts = (status: MyProductsFilter) =>
+  apiGet<MyProductItem[]>(`/products/mine?status=${status}`);
+
+export const fetchProductConversations = (id: number) =>
+  apiGet<ConversationListItem[]>(`/products/${id}/conversations`);

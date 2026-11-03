@@ -70,21 +70,21 @@ public static class DbSeeder
     {
         if (await db.Products.AnyAsync()) return;
 
-        var categories = await db.Categories.ToDictionaryAsync(c => c.Name, c => c.Id);
+        var categories = await db.Categories.ToDictionaryAsync(c => c.Name);
 
         var products = new List<Product>
         {
-            new() { Title = "貓抓板柱 二手9成新", Price = 280, Condition = ProductCondition.Used, CategoryId = categories["貓咪"], BgColorHex = "#DCEEE5", IconKind = "scratcher", Rating = 4.8m, SellerId = shopUser.Id },
-            new() { Title = "中型狗窩床墊 全新未拆", Price = 650, Condition = ProductCondition.New, CategoryId = categories["狗狗"], BgColorHex = "#F7E3D0", IconKind = "bed", Rating = 4.9m, SellerId = shopUser.Id },
-            new() { Title = "牽繩項圈組 附骨頭吊牌", Price = 150, Condition = ProductCondition.Used, CategoryId = categories["用品配件"], BgColorHex = "#FBEFD1", IconKind = "leash", Rating = 4.7m, SellerId = shopUser.Id },
-            new() { Title = "逗貓棒羽毛玩具", Price = 99, Condition = ProductCondition.Used, CategoryId = categories["玩具"], BgColorHex = "#F8DDE7", IconKind = "wand", Rating = 4.6m, SellerId = shopUser.Id },
-            new() { Title = "透氣外出提籠 附墊", Price = 890, Condition = ProductCondition.Used, CategoryId = categories["用品配件"], BgColorHex = "#DCE9F5", IconKind = "carrier", Rating = 5.0m, SellerId = shopUser.Id },
-            new() { Title = "陶瓷雙碗餵食組", Price = 220, Condition = ProductCondition.New, CategoryId = categories["用品配件"], BgColorHex = "#DCEEE5", IconKind = "bowl", Rating = 4.8m, SellerId = shopUser.Id },
-            new() { Title = "天竺鼠飼養籠組", Price = 1200, Condition = ProductCondition.Used, CategoryId = categories["小動物"], BgColorHex = "#F7E3D0", IconKind = "cage", Rating = 4.9m, SellerId = shopUser.Id },
-            new() { Title = "耐咬骨頭潔牙玩具", Price = 60, Condition = ProductCondition.Used, CategoryId = categories["玩具"], BgColorHex = "#FBEFD1", IconKind = "bone", Rating = 4.7m, SellerId = shopUser.Id },
-            new() { Title = "塑膠餵食碗 免費送", Price = 0, Condition = ProductCondition.Used, CategoryId = categories["用品配件"], BgColorHex = "#F8DDE7", IconKind = "bowl", Rating = 4.5m, SellerId = shopUser.Id },
-            new() { Title = "逗貓棒(小損)免費出清", Price = 0, Condition = ProductCondition.Used, CategoryId = categories["玩具"], BgColorHex = "#DCEEE5", IconKind = "wand", Rating = 4.3m, SellerId = shopUser.Id },
-            new() { Title = "貓咪跳台 二手完好", Price = 450, Condition = ProductCondition.Used, CategoryId = categories["貓咪"], BgColorHex = "#F8DDE7", IconKind = "scratcher", Rating = 4.6m, SellerId = demoUser.Id }
+            new() { Title = "貓抓板柱 二手9成新", Price = 280, Condition = ProductCondition.Used, Categories = { categories["貓咪"] }, BgColorHex = "#DCEEE5", IconKind = "scratcher", Rating = 4.8m, SellerId = shopUser.Id },
+            new() { Title = "中型狗窩床墊 全新未拆", Price = 650, Condition = ProductCondition.New, Categories = { categories["狗狗"] }, BgColorHex = "#F7E3D0", IconKind = "bed", Rating = 4.9m, SellerId = shopUser.Id },
+            new() { Title = "牽繩項圈組 附骨頭吊牌", Price = 150, Condition = ProductCondition.Used, Categories = { categories["用品配件"] }, BgColorHex = "#FBEFD1", IconKind = "leash", Rating = 4.7m, SellerId = shopUser.Id },
+            new() { Title = "逗貓棒羽毛玩具", Price = 99, Condition = ProductCondition.Used, Categories = { categories["玩具"] }, BgColorHex = "#F8DDE7", IconKind = "wand", Rating = 4.6m, SellerId = shopUser.Id },
+            new() { Title = "透氣外出提籠 附墊", Price = 890, Condition = ProductCondition.Used, Categories = { categories["用品配件"] }, BgColorHex = "#DCE9F5", IconKind = "carrier", Rating = 5.0m, SellerId = shopUser.Id },
+            new() { Title = "陶瓷雙碗餵食組", Price = 220, Condition = ProductCondition.New, Categories = { categories["用品配件"] }, BgColorHex = "#DCEEE5", IconKind = "bowl", Rating = 4.8m, SellerId = shopUser.Id },
+            new() { Title = "天竺鼠飼養籠組", Price = 1200, Condition = ProductCondition.Used, Categories = { categories["小動物"] }, BgColorHex = "#F7E3D0", IconKind = "cage", Rating = 4.9m, SellerId = shopUser.Id },
+            new() { Title = "耐咬骨頭潔牙玩具", Price = 60, Condition = ProductCondition.Used, Categories = { categories["玩具"] }, BgColorHex = "#FBEFD1", IconKind = "bone", Rating = 4.7m, SellerId = shopUser.Id },
+            new() { Title = "塑膠餵食碗 免費送", Price = 0, Condition = ProductCondition.Used, Categories = { categories["用品配件"] }, BgColorHex = "#F8DDE7", IconKind = "bowl", Rating = 4.5m, SellerId = shopUser.Id },
+            new() { Title = "逗貓棒(小損)免費出清", Price = 0, Condition = ProductCondition.Used, Categories = { categories["玩具"] }, BgColorHex = "#DCEEE5", IconKind = "wand", Rating = 4.3m, SellerId = shopUser.Id },
+            new() { Title = "貓咪跳台 二手完好", Price = 450, Condition = ProductCondition.Used, Categories = { categories["貓咪"] }, BgColorHex = "#F8DDE7", IconKind = "scratcher", Rating = 4.6m, SellerId = demoUser.Id }
         };
 
         db.Products.AddRange(products);

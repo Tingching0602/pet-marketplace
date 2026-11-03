@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
 import { PageHeader } from "../components/layout/PageHeader";
 import { CameraIcon, CheckIcon } from "../components/icons/NavIcons";
 import { colors, fonts } from "../theme/tokens";
-import { fetchCategories, createProduct } from "../api/products";
+import { fetchCategories, createProduct, fetchProduct, updateProduct } from "../api/products";
 import type { Category } from "../types";
 
 const inputStyle: React.CSSProperties = {
@@ -43,9 +43,11 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
 
 export function SellPage() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const editingId = id ? Number(id) : null;
   const [categories, setCategories] = useState<Category[]>([]);
   const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [condition, setCondition] = useState<"New" | "Used" | null>(null);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -57,25 +59,46 @@ export function SellPage() {
     fetchCategories().then(setCategories).catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (editingId == null) return;
+    fetchProduct(editingId)
+      .then((p) => {
+        setTitle(p.title);
+        setCategoryIds(p.categoryIds);
+        setCondition(p.condition);
+        setPrice(String(p.priceRaw));
+        setDescription(p.description ?? "");
+      })
+      .catch(() => setError("找不到這個商品。"));
+  }, [editingId]);
+
+  const toggleCategory = (categoryId: number) =>
+    setCategoryIds((prev) => (prev.includes(categoryId) ? prev.filter((c) => c !== categoryId) : [...prev, categoryId]));
+
   const handleSubmit = async () => {
     setError(null);
-    if (!title.trim() || !categoryId || !condition) {
+    if (!title.trim() || categoryIds.length === 0 || !condition) {
       setError("請填寫商品名稱、分類與商品狀況。");
       return;
     }
     setSubmitting(true);
+    const payload = {
+      title: title.trim(),
+      description: description.trim() || undefined,
+      categoryIds,
+      condition,
+      price: Number(price) || 0,
+    };
     try {
-      await createProduct({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        categoryId,
-        condition,
-        price: Number(price) || 0,
-      });
+      if (editingId != null) {
+        await updateProduct(editingId, payload);
+      } else {
+        await createProduct(payload);
+      }
       setSubmitted(true);
-      setTimeout(() => navigate("/"), 1200);
+      setTimeout(() => navigate(editingId != null ? "/my-products" : "/"), 1200);
     } catch {
-      setError("上架失敗,請稍後再試。");
+      setError(editingId != null ? "儲存失敗,請稍後再試。" : "上架失敗,請稍後再試。");
     } finally {
       setSubmitting(false);
     }
@@ -83,7 +106,7 @@ export function SellPage() {
 
   return (
     <AppShell>
-      <PageHeader title="新增商品" backTo="/" />
+      <PageHeader title={editingId != null ? "編輯商品" : "新增商品"} backTo={editingId != null ? "/my-products" : "/"} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div
@@ -109,10 +132,10 @@ export function SellPage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={labelStyle}>商品分類</div>
+          <div style={labelStyle}>商品分類(可複選)</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {categories.map((c) => (
-              <Chip key={c.id} label={c.name} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} />
+              <Chip key={c.id} label={c.name} active={categoryIds.includes(c.id)} onClick={() => toggleCategory(c.id)} />
             ))}
           </div>
         </div>
@@ -171,13 +194,15 @@ export function SellPage() {
             opacity: submitting ? 0.7 : 1,
           }}
         >
-          {submitting ? "上架中..." : "確認上架"}
+          {editingId != null ? (submitting ? "儲存中..." : "儲存變更") : submitting ? "上架中..." : "確認上架"}
         </div>
 
         {submitted && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center", padding: 6 }}>
             <CheckIcon />
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: colors.success }}>商品已成功上架!</div>
+            <div style={{ fontSize: 12.5, fontWeight: 700, color: colors.success }}>
+              {editingId != null ? "商品已更新!" : "商品已成功上架!"}
+            </div>
           </div>
         )}
       </div>

@@ -17,6 +17,8 @@ export interface Category {
   displayOrder: number;
 }
 
+export type ProductStatus = "Active" | "Reserved" | "Sold" | "Delisted";
+
 export interface ProductListItem {
   id: number;
   title: string;
@@ -24,10 +26,10 @@ export interface ProductListItem {
   isFree: boolean;
   priceRaw: number;
   condition: "New" | "Used";
-  status: "Active" | "Reserved" | "Sold";
+  status: ProductStatus;
   iconKind: string;
   bgColorHex: string;
-  categoryName: string;
+  categoryNames: string[];
   sellerId: string;
   sellerName: string;
   rating: number | null;
@@ -37,9 +39,24 @@ export interface ProductListItem {
 export interface ProductDetail extends Omit<ProductListItem, never> {
   description: string | null;
   imageUrl: string | null;
-  categoryId: number;
+  categoryIds: number[];
   sellerAvatarColorHex: string;
   createdAt: string;
+}
+
+export interface MyProductItem {
+  id: number;
+  title: string;
+  displayPrice: string;
+  isFree: boolean;
+  condition: "New" | "Used";
+  status: ProductStatus;
+  iconKind: string;
+  bgColorHex: string;
+  categoryNames: string[];
+  conversationCount: number;
+  unreadCount: number;
+  updatedAt: string;
 }
 
 export interface ProductListResponse {

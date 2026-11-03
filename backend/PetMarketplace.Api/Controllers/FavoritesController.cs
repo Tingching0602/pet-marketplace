@@ -30,8 +30,10 @@ public class FavoritesController : ControllerBase
         var userId = CurrentUserId;
 
         var products = await _db.Favorites
-            .Where(f => f.UserId == userId && f.Product.Status != ProductStatus.Sold)
-            .Include(f => f.Product).ThenInclude(p => p.Category)
+            .Where(f => f.UserId == userId &&
+                        f.Product.Status != ProductStatus.Sold &&
+                        f.Product.Status != ProductStatus.Delisted)
+            .Include(f => f.Product).ThenInclude(p => p.Categories)
             .Include(f => f.Product).ThenInclude(p => p.Seller)
             .OrderByDescending(f => f.CreatedAt)
             .Select(f => f.Product)
@@ -40,7 +42,7 @@ public class FavoritesController : ControllerBase
         var items = products.Select(p => new ProductListItemDto(
             p.Id, p.Title, FormatPrice(p.Price), p.Price == 0, p.Price,
             p.Condition.ToString(), p.Status.ToString(), p.IconKind, p.BgColorHex,
-            p.Category.Name, p.SellerId, p.Seller.DisplayName, p.Rating, true
+            p.Categories.OrderBy(c => c.DisplayOrder).Select(c => c.Name).ToList(), p.SellerId, p.Seller.DisplayName, p.Rating, true
         )).ToList();
 
         return Ok(items);
@@ -51,8 +53,9 @@ public class FavoritesController : ControllerBase
     {
         var userId = CurrentUserId;
 
-        var productExists = await _db.Products.AnyAsync(p => p.Id == productId);
-        if (!productExists) return NotFound();
+        var product = await _db.Products.FirstOrDefaultAsync(p => p.Id == productId);
+        if (product == null) return NotFound();
+        if (product.SellerId == userId) return BadRequest(new { message = "不能收藏自己上架的商品。" });
 
         var existing = await _db.Favorites.FirstOrDefaultAsync(f => f.UserId == userId && f.ProductId == productId);
         if (existing != null)

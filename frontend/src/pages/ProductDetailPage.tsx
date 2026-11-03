@@ -15,6 +15,7 @@ const conditionLabel: Record<string, string> = { New: "全新", Used: "二手" }
 const statusBadge: Record<string, { label: string; bg: string }> = {
   Reserved: { label: "洽談中", bg: colors.accentDefault },
   Sold: { label: "已售出", bg: colors.textPrimary },
+  Delisted: { label: "已下架", bg: colors.textMuted },
 };
 
 export function ProductDetailPage() {
@@ -100,7 +101,7 @@ export function ProductDetailPage() {
     }
   };
 
-  const handleUpdateStatus = async (status: "Active" | "Sold") => {
+  const handleUpdateStatus = async (status: "Active" | "Sold" | "Delisted") => {
     setMarking(true);
     try {
       await updateProductStatus(product.id, status);
@@ -250,6 +251,55 @@ export function ProductDetailPage() {
           {!isOwner && product.status === "Reserved" && (
             <div style={{ fontSize: 11.5, fontWeight: 700, color: colors.textMuted, marginTop: 8, textAlign: "center" }}>
               這件商品目前正在與其他買家洽談,仍可詢問賣家是否還有機會。
+            </div>
+          )}
+
+          {isOwner && (
+            <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
+              <div
+                onClick={() => navigate(`/products/${product.id}/edit`)}
+                style={{
+                  flex: 1,
+                  textAlign: "center",
+                  background: colors.cardWhite,
+                  border: `1.5px solid ${colors.accentDefault}`,
+                  borderRadius: 999,
+                  padding: 12,
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  fontSize: 13.5,
+                  color: colors.accentDefault,
+                }}
+              >
+                編輯商品
+              </div>
+              {product.status !== "Sold" && (
+                <div
+                  onClick={
+                    marking
+                      ? undefined
+                      : () => {
+                          if (product.status === "Delisted") handleUpdateStatus("Active");
+                          else if (window.confirm(`確定要下架「${product.title}」嗎?下架後買家將看不到這件商品。`)) handleUpdateStatus("Delisted");
+                        }
+                  }
+                  style={{
+                    flex: 1,
+                    textAlign: "center",
+                    background: colors.background,
+                    border: `1.5px solid ${colors.border}`,
+                    borderRadius: 999,
+                    padding: 12,
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    fontSize: 13.5,
+                    color: colors.textPrimary,
+                    opacity: marking ? 0.7 : 1,
+                  }}
+                >
+                  {product.status === "Delisted" ? "重新上架" : "下架"}
+                </div>
+              )}
             </div>
           )}
 

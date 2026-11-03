@@ -3,6 +3,7 @@ import { colors, fonts } from "../theme/tokens";
 import { HeartIcon, StarIcon } from "./icons/NavIcons";
 import { ProductIllustration } from "./icons/ProductIcons";
 import { useFavorites } from "../context/FavoritesContext";
+import { useAuth } from "../context/AuthContext";
 import type { ProductListItem } from "../types";
 
 const conditionLabel: Record<string, string> = { New: "全新", Used: "二手" };
@@ -11,7 +12,9 @@ const statusLabel: Record<string, string> = { Reserved: "洽談中", Sold: "已�
 export function ProductCard({ product, imgHeight = 160 }: { product: ProductListItem; imgHeight?: number }) {
   const navigate = useNavigate();
   const { isFavorited, toggle } = useFavorites();
+  const { user } = useAuth();
   const liked = isFavorited(product.id);
+  const isOwner = user?.id === product.sellerId;
 
   return (
     <div
@@ -70,27 +73,29 @@ export function ProductCard({ product, imgHeight = 160 }: { product: ProductList
           </div>
         )}
 
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            toggle(product.id);
-          }}
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            width: 28,
-            height: 28,
-            borderRadius: 999,
-            background: "rgba(255,255,255,0.9)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <HeartIcon size={15} filled={liked} color={liked ? colors.heartActive : colors.textPrimary} />
-        </div>
+        {!isOwner && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              toggle(product.id);
+            }}
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: 28,
+              height: 28,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.9)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <HeartIcon size={15} filled={liked} color={liked ? colors.heartActive : colors.textPrimary} />
+          </div>
+        )}
 
         <ProductIllustration kind={product.iconKind} />
       </div>

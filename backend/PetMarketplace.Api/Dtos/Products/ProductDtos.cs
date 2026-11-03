@@ -12,7 +12,7 @@ public record ProductListItemDto(
     string Status,
     string IconKind,
     string BgColorHex,
-    string CategoryName,
+    List<string> CategoryNames,
     string SellerId,
     string SellerName,
     decimal? Rating,
@@ -31,8 +31,8 @@ public record ProductDto(
     string? ImageUrl,
     string IconKind,
     string BgColorHex,
-    int CategoryId,
-    string CategoryName,
+    List<int> CategoryIds,
+    List<string> CategoryNames,
     string SellerId,
     string SellerName,
     string SellerAvatarColorHex,
@@ -46,11 +46,34 @@ public record ProductListResponse(List<ProductListItemDto> Items, int Total);
 public record CreateProductRequest(
     string Title,
     string? Description,
-    int CategoryId,
+    List<int> CategoryIds,
     string Condition,
     decimal Price,
     string? IconKind,
     string? ImageUrl
 );
 
+public record UpdateProductRequest(
+    string Title,
+    string? Description,
+    List<int> CategoryIds,
+    string Condition,
+    decimal Price
+);
+
 public record UpdateProductStatusRequest(string Status);
+
+public record MyProductItemDto(
+    int Id,
+    string Title,
+    string DisplayPrice,
+    bool IsFree,
+    string Condition,
+    string Status,
+    string IconKind,
+    string BgColorHex,
+    List<string> CategoryNames,
+    int ConversationCount,
+    int UnreadCount,
+    DateTime UpdatedAt
+);

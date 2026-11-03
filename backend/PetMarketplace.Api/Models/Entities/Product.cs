@@ -10,7 +10,8 @@ public enum ProductStatus
 {
     Active,
     Reserved,
-    Sold
+    Sold,
+    Delisted
 }
 
 public class Product
@@ -28,8 +29,7 @@ public class Product
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public int CategoryId { get; set; }
-    public Category Category { get; set; } = null!;
+    public ICollection<Category> Categories { get; set; } = new List<Category>();
 
     public string SellerId { get; set; } = "";
     public ApplicationUser Seller { get; set; } = null!;
